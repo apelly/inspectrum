@@ -31,7 +31,7 @@ SpectrogramControls::SpectrogramControls(const QString & title, QWidget * parent
     widget = new QWidget(this);
     layout = new QFormLayout(widget);
 
-    fileOpenButton = new QPushButton("Open file...", widget);
+    fileOpenButton = new QPushButton(tr("Open file..."), widget);
     layout->addRow(fileOpenButton);
 
     sampleRate = new QLineEdit();

@@ -75,12 +75,13 @@ void PlotView::contextMenuEvent(QContextMenuEvent * event)
 
     // Add actions to add derived plots
     // that are compatible with selectedPlot's output
-    QMenu *plotsMenu = menu.addMenu("Add derived plot");
+    QMenu *plotsMenu = menu.addMenu(tr("Add derived plot"));
     auto src = selectedPlot->output();
     auto compatiblePlots = as_range(Plots::plots.equal_range(src->sampleType()));
     for (auto p : compatiblePlots) {
         auto plotInfo = p.second;
-        auto action = new QAction(QString("Add %1").arg(plotInfo.name), plotsMenu);
+        //: Add plotInfo name
+        auto action = new QAction(QString(tr("Add %1")).arg(plotInfo.name), plotsMenu);
         auto plotCreator = plotInfo.creator;
         connect(
             action, &QAction::triggered,
@@ -92,7 +93,7 @@ void PlotView::contextMenuEvent(QContextMenuEvent * event)
     }
 
     // Add action to extract symbols from selected plot
-    auto extract = new QAction("Extract symbols...", &menu);
+    auto extract = new QAction(tr("Extract symbols..."), &menu);
     connect(
         extract, &QAction::triggered,
         this, [=]() {
@@ -103,7 +104,7 @@ void PlotView::contextMenuEvent(QContextMenuEvent * event)
     menu.addAction(extract);
 
     // Add action to export the selected samples into a file
-    auto save = new QAction("Export samples to file...", &menu);
+    auto save = new QAction(tr("Export samples to file..."), &menu);
     connect(
         save, &QAction::triggered,
         this, [=]() {
@@ -223,12 +224,12 @@ void PlotView::exportSamples(std::shared_ptr<AbstractSampleSource> src)
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setOption(QFileDialog::DontUseNativeDialog, true);
 
-    QGroupBox groupBox("Selection To Export", &dialog);
+    QGroupBox groupBox(tr("Selection To Export"), &dialog);
     QVBoxLayout vbox(&groupBox);
 
-    QRadioButton cursorSelection("Cursor Selection", &groupBox);
-    QRadioButton currentView("Current View", &groupBox);
-    QRadioButton completeFile("Complete File (Experimental)", &groupBox);
+    QRadioButton cursorSelection(tr("Cursor Selection"), &groupBox);
+    QRadioButton currentView(tr("Current View"), &groupBox);
+    QRadioButton completeFile(tr("Complete File (Experimental)"), &groupBox);
 
     if (cursorsEnabled) {
         cursorSelection.setChecked(true);
@@ -247,7 +248,7 @@ void PlotView::exportSamples(std::shared_ptr<AbstractSampleSource> src)
     QGridLayout *l = dialog.findChild<QGridLayout*>();
     l->addWidget(&groupBox, 4, 1);
 
-    QGroupBox groupBox2("Decimation");
+    QGroupBox groupBox2(tr("Decimation"));
     QSpinBox decimation(&groupBox2);
     decimation.setValue(1 / complexSrc->relativeBandwidth());
 

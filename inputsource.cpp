@@ -147,18 +147,21 @@ void InputSource::openFile(const char *filename)
         //QTextStream qout(stdout);
         //qout << tr("Error opening file: %1 (%2)", strerror(errno), errno);
         std::stringstream ss;
+        // TODO: untranslateable string. Why is this a runtime error and not just msg and exit(1)?
         ss << "Error opening file: " << strerror(errno) << " (" << errno << ")";
         throw std::runtime_error(ss.str());
     }
 
     struct stat sb;
     if (fstat(fileno(file), &sb) != 0)
+        // TODO: untranslateable string. Why is this a runtime error and not just msg and exit(1)?
         throw std::runtime_error("Error fstating file");
     off_t size = sb.st_size;
     sampleCount = size / sampleAdapter->sampleSize();
 
     auto data = mmap(NULL, size, PROT_READ, MAP_SHARED, fileno(file), 0);
     if (data == nullptr)
+        // TODO: untranslateable string. Why is this a runtime error and not just msg and exit(1)?
         throw std::runtime_error("Error mmapping file");
 
     cleanup();
