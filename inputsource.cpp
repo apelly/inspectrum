@@ -31,6 +31,8 @@
 #include <algorithm>
 
 #include <QFileInfo>
+// TODO: make file errors translateable
+// #include <QTextStream>
 
 class ComplexF32SampleAdapter : public SampleAdapter {
 public:
@@ -141,6 +143,9 @@ void InputSource::openFile(const char *filename)
     errno = 0;
     FILE *file = fopen(filename, "rb");
     if (file == nullptr) {
+// TODO: make file errors translateable
+        //QTextStream qout(stdout);
+        //qout << tr("Error opening file: %1 (%2)", strerror(errno), errno);
         std::stringstream ss;
         ss << "Error opening file: " << strerror(errno) << " (" << errno << ")";
         throw std::runtime_error(ss.str());
