@@ -40,6 +40,20 @@ inspectrum is a tool for analysing captured signals, primarily from software-def
     sudo make install
 
 
+### Translation
+**TODO:** dev notes: tidy up.
+Translations are stored in src/i18n in files names lang_languageCode_countryCode. e.g.
+    ./i18n/lang_en_GB.qm
+
+The language is determined by the system locale, and may be overridden with the environment variable LANG. If no
+translation exists the fallback is to use the software as it was written.
+    export LANG=en_GB
+The workflow for translation is to run `lupdate` to generate/update the translation source (.ts file), from the C++ cource. Use Qt Linguist to add translations and then `lrelease` to compress the source .ts file into a binary file that is used by the program at runtime.
+    lupdate *.cpp -ts i18n/lang_en_GB.ts
+Update translations with Qt linguist or your favourite editor.
+    cd /path/to/binary/i18n
+    lrelease /path/to/source/i18n/lang_en_GB.ts
+
 ### Run
 
     ./inspectrum

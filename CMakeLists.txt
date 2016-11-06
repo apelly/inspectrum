@@ -54,6 +54,7 @@ INCLUDE(FindPkgConfig)
 find_package(Qt5Widgets REQUIRED)
 pkg_check_modules(FFTW REQUIRED fftw3f)
 find_package(Liquid REQUIRED)
+find_package(Qt5LinguistTools)
 
 include_directories(
     ${QT_INCLUDES}
@@ -88,3 +89,34 @@ configure_file(
 add_custom_target(uninstall
     ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
 )
+
+### translation stuff
+# there is useful information at the bottom https://doc.qt.io/qt-5/cmake-manual.html
+#
+# the code here stems from:
+# https://gist.github.com/02JanDal/70a39f2cc3d2002b3588
+# google has sfa to say on the topic. maybe people who understand cmake documentation 
+# don't need any further information.
+#
+# i have read about a bug that removes .ts files during make clean.
+# that is obnoxious behaviour because the .ts knows what has been translated and
+# what is new/changed
+#
+# also, I have no idea where these translation files go when the software 
+# is installed. /usr/local/bin/what? this doesn't seem like the right place for them.
+#
+# more notes in readme.md
+
+file(GLOB TRANSLATION_FILES ${CMAKE_SOURCE_DIR}/i18n/*.ts)
+message(info ${TRANSLATION_FILES})
+message(info ${inspectrum_sources})
+qt5_create_translation(TRANSLATION_MESSAGES ${inspectrum_sources} ${TRANSLATION_FILES})
+qt5_add_translation(TRANSLATION_QM ${TRANSLATION_FILES})
+add_custom_target(translations_update DEPENDS ${TRANSLATION_MESSAGES})
+add_custom_target(translations DEPENDS ${TRANSLATION_QM})
+
+if(APPLE AND UNIX) ## OSX
+        install(FILES ${TRANSLATION_QM} DESTINATION MultiMC.app/Contents/Resources/translations)
+    else()
+            install(FILES ${TRANSLATION_QM} DESTINATION translations)
+        endif()
